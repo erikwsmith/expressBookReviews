@@ -7,8 +7,7 @@ const public_users = express.Router();
 public_users.post("/register", (req,res) => {
     let username = req.body.username;
     let password = req.body.password;
-    let existingUser = users.find(user => user.username === username);
-    if(existingUser){
+    if(isValid(username)){
         return res.send("User already exists.");
     };
     if(!username || !password){
