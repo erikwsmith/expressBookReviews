@@ -21,28 +21,46 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {  
-  return res.send(JSON.stringify(books));
+public_users.get('/', async (req, res) => {  
+    const bookPromise = new Promise((resolve, reject)=>{
+        setTimeout(()=>{
+            resolve(books);
+        },2000);        
+    });
+    const bookData = await bookPromise;
+    res.send(JSON.stringify(bookData));
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn', async (req, res) => {
     let ISBN = req.params.isbn;
-    let book = books[ISBN];
+    const bookPromise = new Promise((resolve, reject)=>{
+        setTimeout(()=>{
+            resolve(books);
+        },2000);        
+    });
+    const bookData = await bookPromise;        
+    let book = bookData[ISBN];
     if(book){
         return res.send(JSON.stringify(book));
     }else {
         return res.send("ISBN not found.");
-    };
+    };    
 });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
+public_users.get('/author/:author', async (req, res) => {
     let author = req.params.author;
     let authorArray = [];
-    for(let book in books) {
-        if(books[book].author === author){
-            authorArray.push(books[book]);
+    const bookPromise = new Promise((resolve, reject)=>{
+        setTimeout(()=>{
+            resolve(books);
+        },2000);        
+    });
+    const bookData = await bookPromise; 
+    for(let book in bookData) {
+        if(bookData[book].author === author){
+            authorArray.push(bookData[book]);
         };
     };
     if(authorArray.length > 0){
@@ -53,12 +71,18 @@ public_users.get('/author/:author',function (req, res) {
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+public_users.get('/title/:title', async (req, res) => {
     let title = req.params.title;
     let titleArray = [];
-    for(let book in books){
-        if(books[book].title === title){
-            titleArray.push(books[book]);
+    const bookPromise = new Promise((resolve, reject)=>{
+        setTimeout(()=>{
+            resolve(books);
+        },2000);        
+    });
+    const bookData = await bookPromise; 
+    for(let book in bookData){
+        if(bookData[book].title === title){
+            titleArray.push(bookData[book]);
         };
     };
     if(titleArray.length > 0){
@@ -69,9 +93,15 @@ public_users.get('/title/:title',function (req, res) {
 });
 
 //  Get book review
-public_users.get('/review/:isbn',function (req, res) {
+public_users.get('/review/:isbn', async (req, res) => {
   let ISBN = req.params.isbn;
-  let book = books[ISBN];
+  const bookPromise = new Promise((resolve, reject)=>{
+    setTimeout(()=>{
+        resolve(books);
+    },2000);        
+});
+const bookData = await bookPromise; 
+  let book = bookData[ISBN];
     if(book){
         return res.send(JSON.stringify(book.reviews));
     }else {
